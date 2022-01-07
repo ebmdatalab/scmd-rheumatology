@@ -1,0 +1,66 @@
+type,id,bnf_code,nm,ingredient,ddd
+vmp,10970211000001102,1001030D0AAACAC,Etanercept 50mg/1ml solution for injection pre-filled syringes,Etanercept,7
+vmp,11034511000001106,1001030D0AAADAD,Etanercept 25mg/0.5ml solution for injection pre-filled syringes,Etanercept,7
+vmp,11236911000001103,1001030S0AAABAB,Adalimumab 40mg/0.8ml solution for injection pre-filled disposable devices,Adalimumab,2.9
+vmp,11762011000001101,1001030V0AAAAAA,Abatacept 250mg powder for solution for infusion vials,Abatacept,27
+vmp,15987111000001107,1001030D0AAAEAE,Etanercept 50mg/1ml solution for injection pre-filled disposable devices,Etanercept,7
+vmp,16101911000001101,1001030W0AAABAB,Tocilizumab 200mg/10ml solution for infusion vials,Tocilizumab,20
+vmp,16102011000001108,1001030W0AAACAC,Tocilizumab 400mg/20ml solution for infusion vials,Tocilizumab,20
+vmp,16102111000001109,1001030W0AAAAAA,Tocilizumab 80mg/4ml solution for infusion vials,Tocilizumab,20
+vmp,17315811000001100,1001030Y0AAAAAA,Certolizumab pegol 200mg/1ml solution for injection pre-filled syringes,Certolizumab pegol,14
+vmp,18038011000001101,1001030X0AAABAB,Golimumab 50mg/0.5ml solution for injection pre-filled disposable devices,Golimumab,1.66
+vmp,18038111000001100,1001030X0AAAAAA,Golimumab 50mg/0.5ml solution for injection pre-filled syringes,Golimumab,1.66
+vmp,19448511000001100,0801050BCAAABAB,Ipilimumab 200mg/40ml solution for infusion vials,Ipilimumab,NA
+vmp,19448611000001101,0801050BCAAAAAA,Ipilimumab 50mg/10ml solution for infusion vials,Ipilimumab,NA
+vmp,19697711000001100,1001030S0AAACAC,Adalimumab 40mg/0.8ml solution for injection vials,Adalimumab,2.9
+vmp,19946811000001101,1001030D0AAAFAF,Etanercept 10mg powder and solvent for solution for injection vials,Etanercept,7
+vmp,21704711000001107,1001030V0AAABAB,Abatacept 125mg/1ml solution for injection pre-filled syringes,Abatacept,27
+vmp,23984711000001106,1001030X0AAACAC,Golimumab 100mg/1ml solution for injection pre-filled disposable devices,Golimumab,1.66
+vmp,24856511000001109,0802030F0AAACAC,Rituximab 1.4g/11.7ml solution for injection vials,Rituximab,NA
+vmp,24856911000001102,1001030W0AAADAD,Tocilizumab 162mg/0.9ml solution for injection pre-filled syringes,Tocilizumab,20
+vmp,29767011000001106,1001030V0AAACAC,Abatacept 125mg/1ml solution for injection pre-filled disposable devices,Abatacept,27
+vmp,29889111000001100,0802040ATAAABAB,Nivolumab 100mg/10ml solution for infusion vials,Nivolumab,NA
+vmp,29889211000001106,0802040ATAAAAAA,Nivolumab 40mg/4ml solution for infusion vials,Nivolumab,NA
+vmp,30033011000001108,0801050CAAAAAAA,Pembrolizumab 50mg powder for solution for infusion vials,Pembrolizumab,NA
+vmp,32888111000001102,1001030S0AAADAD,Adalimumab 40mg/0.4ml solution for injection pre-filled disposable devices,Adalimumab,2.9
+vmp,32888211000001108,1001030S0AAAEAE,Adalimumab 40mg/0.4ml solution for injection pre-filled syringes,Adalimumab,2.9
+vmp,33523711000001105,1001030Y0AAABAB,Certolizumab pegol 200mg/1ml solution for injection pre-filled disposable devices,Certolizumab pegol,14
+vmp,34346011000001104,1001030ACAAAAAA,Baricitinib 4mg tablets,Baricitinib,4
+vmp,34378411000001105,0801050CAAAABAB,Pembrolizumab 100mg/4ml solution for infusion vials,Pembrolizumab,NA
+vmp,34625211000001109,1001030ACAAABAB,Baricitinib 2mg tablets,Baricitinib,4
+vmp,34742511000001107,1001030ADAAACAC,Sarilumab 150mg/1.14ml solution for injection pre-filled disposable devices,Sarilumab,14.3
+vmp,34742611000001106,1001030ADAAAAAA,Sarilumab 150mg/1.14ml solution for injection pre-filled syringes,Sarilumab,14.3
+vmp,34742711000001102,1001030ADAAADAD,Sarilumab 200mg/1.14ml solution for injection pre-filled disposable devices,Sarilumab,14.3
+vmp,34742811000001105,1001030ADAAABAB,Sarilumab 200mg/1.14ml solution for injection pre-filled syringes,Sarilumab,14.3
+vmp,34840511000001108,1001030D0AAAGAG,Etanercept 25mg/0.5ml solution for injection pre-filled disposable devices,Etanercept,7
+vmp,35318811000001108,1001030S0AAAFAF,Adalimumab 20mg/0.2ml solution for injection pre-filled syringes,Adalimumab,2.9
+vmp,35431611000001103,1001030W0AAAEAE,Tocilizumab 162mg/0.9ml solution for injection pre-filled disposable devices,Tocilizumab,20
+vmp,35541811000001105,0802040ATAAACAC,Nivolumab 240mg/24ml solution for infusion vials,Nivolumab,NA
+vmp,35734311000001100,1001030ABAAACAC,Tofacitinib 10mg tablets,Tofacitinib citrate,10
+vmp,35894411000001100,1001030S0AAAAAA,Adalimumab 40mg/0.8ml solution for injection pre-filled syringes,Adalimumab,2.9
+vmp,35934711000001107,0802030F0AAABAB,Rituximab 100mg/10ml solution for infusion vials,Rituximab,NA
+vmp,35934811000001104,0802030F0AAAAAA,Rituximab 500mg/50ml solution for infusion vials,Rituximab,NA
+vmp,36065611000001101,1001030D0AAAAAA,Etanercept 25mg powder and solvent for solution for injection vials,Etanercept,7
+vmp,36065711000001105,1001030D0AAABAB,Etanercept 50mg powder and solvent for solution for injection vials,Etanercept,7
+vmp,36441711000001106,1001030S0AAAIAI,Adalimumab 20mg/0.4ml solution for injection pre-filled syringes,Adalimumab,2.9
+vmp,36457911000001103,1001030S0AAAHAH,Adalimumab 80mg/0.8ml solution for injection pre-filled disposable devices,Adalimumab,2.9
+vmp,36458011000001101,1001030S0AAAGAG,Adalimumab 80mg/0.8ml solution for injection pre-filled syringes,Adalimumab,2.9
+vmp,37223011000001109,1001030V0AAAEAE,Abatacept 50mg/0.4ml solution for injection pre-filled syringes,Abatacept,27
+vmp,37223111000001105,1001030V0AAADAD,Abatacept 87.5mg/0.7ml solution for injection pre-filled syringes,Abatacept,27
+vmp,37829011000001101,NA,Rituximab 1000mg/500ml in Sodium chloride 0.9% infusion bags,Rituximab,NA
+vmp,37829111000001100,NA,Rituximab 500mg/500ml in Sodium chloride 0.9% infusion bags,Rituximab,NA
+vmp,37829211000001106,NA,Rituximab 600mg/500ml in Sodium chloride 0.9% infusion bags,Rituximab,NA
+vmp,37829311000001103,NA,Rituximab 700mg/500ml in Sodium chloride 0.9% infusion bags,Rituximab,NA
+vmp,37829511000001109,NA,Rituximab 800mg/500ml in Sodium chloride 0.9% infusion bags,Rituximab,NA
+vmp,37829611000001108,NA,Rituximab 900mg/500ml in Sodium chloride 0.9% infusion bags,Rituximab,NA
+vmp,37854811000001107,1001030Y0AAACAC,Certolizumab pegol 200mg/1ml solution for injection cartridges,Certolizumab pegol,14
+vmp,38030511000001109,NA,Upadacitinib hemihydrate 15mg tablets,Upadacitinib hemihydrate,NA
+vmp,38067611000001103,1001030AEAAAAAA,Upadacitinib 15mg modified-release tablets,Upadacitinib hemihydrate,NA
+vmp,38162311000001103,1001030ABAAADAD,Tofacitinib 11mg modified-release tablets,Tofacitinib citrate,10
+vmp,38196011000001104,1001030T0AAABAB,Infliximab 120mg/1ml solution for injection pre-filled disposable devices,Infliximab,3.75
+vmp,38196111000001103,1001030T0AAACAC,Infliximab 120mg/1ml solution for injection pre-filled syringes,Infliximab,3.75
+vmp,39046211000001107,1001030AGAAAAAA,Filgotinib 100mg tablets,Filgotinib maleate,NA
+vmp,39046311000001104,1001030AGAAABAB,Filgotinib 200mg tablets,Filgotinib maleate,NA
+vmp,39705411000001108,1001030ABAAABAB,Tofacitinib 5mg tablets,Tofacitinib citrate,10
+vmp,400687000,1001030T0AAAAAA,Infliximab 100mg powder for solution for infusion vials,Infliximab,3.75
+vmp,40087811000001102,1001030AEAAABAB,Upadacitinib 30mg modified-release tablets,Upadacitinib hemihydrate,NA
