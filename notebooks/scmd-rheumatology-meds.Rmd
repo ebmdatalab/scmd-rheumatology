@@ -95,7 +95,7 @@ codelist %>%
 
 Before we can analyse trends and variation we need to prepare our dataset. 
 This analysis uses three different sources of data.
-The file `scipts/get_data.R` ...
+The file `scipts/get_data.R` describes the pre-processing of the "NHS Trusts" data (see below)
 
 ### NHS Trusts
 
