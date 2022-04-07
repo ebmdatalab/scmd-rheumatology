@@ -45,6 +45,11 @@ library(lubridate)
 library(tippy)
 ```
 
+**NOTE THAT THE ddd CONVERSION IS CURRENTLY NOT ACCURATE.**
+**MISMATCHES OF UNITS in dmd DATA ARE CAUSING ERRORS IN ddd calculations.**
+**THE OVERALL TRAJECTORIES MAY BE ACCURATE BUT THE UNITS ARE CURRENTLY NOT.**
+**AS A TEMPORARY SOLUTION WE HAVE FREED THE Y AXIS SCALING.**
+
 # Background
 
 Our team delivers [OpenPrescribing.net](https://openprescribing.net/), a publicly funded and openly accessible explorer for NHS primary care prescribing supported by prescribing data openly published by the NHS Business Services Authority. 
@@ -174,8 +179,8 @@ df_etr %>%
 # Get SCMD dataset
 # db_scmd <- dplyr::tbl(conn_ebm_scmd, sql_query_scmd)
 # # Create dataframe for table
-# df_scmd <- db_scmd %>% 
-#   dplyr::filter(vmp_snomed_code %in% codes) %>% 
+# df_scmd <- db_scmd %>%
+#   dplyr::filter(vmp_snomed_code %in% codes) %>%
 #   dplyr::collect()
 # # Write csv file
 # write_csv(df_scmd, here("data/df_scmd_rheumatology.csv"))
@@ -385,6 +390,11 @@ df_scmd_mg %>%
 
 ## Convert volume
 
+**NOTE THAT THE ddd CONVERSION IS CURRENTLY NOT ACCURATE.**
+**MISMATCHES OF UNITS in dmd DATA ARE CAUSING ERRORS IN ddd calculations.**
+**THE OVERALL TRAJECTORIES MAY BE ACCURATE BUT THE UNITS ARE CURRENTLY NOT.**
+**AS A TEMPORARY SOLUTION WE HAVE FREED THE Y AXIS SCALING.**
+
 The final data cleaning step is to convert the volume from VMP quantity (as provided in the SCMD dataset) to volume in DDDs.
 
 - SCMD volumes data is provided in vmp quantity - this means different things for different products. e.g. 100mg powder = 1 vmp quantity but 100mg/20ml solution for injection = 20 vmp quantity, even though both VMPS have the same strength of ingredient.
@@ -409,7 +419,12 @@ df_scmd_ddd <- df_scmd_mg %>%
 
 ### National prescribing
 
-```{r, fig.width=7.2, fig.height=3, cache=TRUE, fig.cap="Figure. National prescribing of rheumatology treatments over time."}
+**NOTE THAT THE ddd CONVERSION IS CURRENTLY NOT ACCURATE.**
+**MISMATCHES OF UNITS in dmd DATA ARE CAUSING ERRORS IN ddd calculations.**
+**THE OVERALL TRAJECTORIES MAY BE ACCURATE BUT THE UNITS ARE CURRENTLY NOT.**
+**AS A TEMPORARY SOLUTION WE HAVE FREED THE Y AXIS SCALING.**
+
+```{r, fig.width=10, fig.height=16, cache=TRUE, fig.cap="Figure. National prescribing of rheumatology treatments over time."}
 temp_ggplot <- df_scmd_ddd %>%
   group_by(year_month, vtmnm) %>%
   summarise(volume_ddd = sum(volume_ddd)) %>% 
@@ -425,13 +440,14 @@ temp_ggplot <- df_scmd_ddd %>%
                                "<b>Medication:</b> ", vtmnm)), size = 2) +
   scale_x_date(date_breaks = "4 month", date_labels =  "%b %y") +  
   scale_colour_viridis_d() +
-  labs(x = NULL, y = "Defined Daily Dose",
+  labs(x = NULL, y = "Defined Daily Dose (NOTE THAT UNITS ARE NOT ACCURATE)",
        colour = NULL) +
   geom_vline(xintercept = as.numeric(as.Date("2020-03-31")), 
              color = "orange", 
              linetype = 2,
              lwd = .5, 
              alpha = .5) +
+  facet_wrap(~vtmnm, scales = "free_y", ncol = 2) +
   theme(text = element_text(size = 12))
 
 # temp_ggplot
@@ -442,12 +458,17 @@ plotly::ggplotly(temp_ggplot,
 
 ### Regional prescribing
 
+**NOTE THAT THE ddd CONVERSION IS CURRENTLY NOT ACCURATE.**
+**MISMATCHES OF UNITS in dmd DATA ARE CAUSING ERRORS IN ddd calculations.**
+**THE OVERALL TRAJECTORIES MAY BE ACCURATE BUT THE UNITS ARE CURRENTLY NOT.**
+**AS A TEMPORARY SOLUTION WE HAVE FREED THE Y AXIS SCALING.**
+
 ```{r}
 df_scmd_ddd_map <- df_scmd_ddd %>% 
   left_join(stp_to_region_map, by = "stp_code")
 ```
 
-```{r, fig.width=10, fig.height=12, fig.cap="Figure. Regional prescribing of rheumatology treatments over time."}
+```{r, fig.width=10, fig.height=16, fig.cap="Figure. Regional prescribing of rheumatology treatments over time."}
 temp_ggplot <- df_scmd_ddd_map %>%
   group_by(comm_region_name, year_month, vtmnm) %>%
   summarise(volume_ddd = sum(volume_ddd)) %>% 
@@ -470,9 +491,9 @@ temp_ggplot <- df_scmd_ddd_map %>%
   scale_x_date(date_breaks = "4 month", date_labels =  "%b %y") +
   scale_colour_viridis_d(end = 1) +
   labs(x = NULL, 
-       y = "Defined Daily Dose",
+       y = "Defined Daily Dose (NOTE THAT UNITS ARE NOT ACCURATE)",
        colour = NULL) +
-  facet_wrap(~vtmnm, ncol = 3) +
+  facet_wrap(~vtmnm, ncol = 2, scales = "free_y") +
   theme(text = element_text(size = 9)) 
   
 # temp_ggplot
@@ -481,11 +502,11 @@ plotly::ggplotly(temp_ggplot,
   plotly::config(displayModeBar = FALSE)
 ```
 
-## Total volume per year
+<!-- ## Total volume per year -->
 
-### Regional prescribing
+<!-- ### Regional prescribing -->
 
-```{r fig.width=8, fig.height=4, fig.cap="Figure. Total regional prescribing of rheumatology treatments."}
+```{r fig.width=8, fig.height=4, fig.cap="Figure. Total regional prescribing of rheumatology treatments.", eval=FALSE}
 temp_ggplot <- df_scmd_ddd_map %>% 
   select(year_month, ods_code, vtmnm, volume_ddd, comm_region_name) %>% 
   mutate(comm_region_name = fct_explicit_na(comm_region_name)) %>% 
@@ -512,7 +533,7 @@ temp_ggplot <- df_scmd_ddd_map %>%
   scale_fill_viridis_d() +
   labs(subtitle = paste0("From: ", min(df_scmd_ddd_map$year_month), " to ", max(df_scmd_ddd_map$year_month)),
        x = NULL,
-       y = "Defined Daily Dose",
+       y = "Defined Daily Dose (NOTE THAT UNITS ARE NOT ACCURATE)",
        fill = NULL) +
   scale_y_continuous(labels = scales::comma) +
   theme(text = element_text(size = 12)) +
@@ -524,9 +545,9 @@ plotly::ggplotly(temp_ggplot,
   plotly::config(displayModeBar = FALSE)
 ```
 
-### STPs
+<!-- ### STPs -->
 
-```{r, fig.width=8, fig.height=6, fig.cap="Figure. Total prescribing of rheumatology treatments for 20 STPs with the largest volume across all selected medications."}
+```{r, fig.width=8, fig.height=6, fig.cap="Figure. Total prescribing of rheumatology treatments for 20 STPs with the largest volume across all selected medications.", eval=FALSE}
 df_scmd_ddd_map_temp <- df_scmd_ddd_map %>% 
   # filter(year_month >= as.Date("2019-08-01") & year_month <= as.Date("2020-07-01")) %>%
   select(year_month, ods_code, vtmnm, volume_ddd, stp_name) %>% 
@@ -553,7 +574,7 @@ temp_ggplot <- df_scmd_ddd_map_temp %>%
   scale_fill_viridis_d() +
   labs(subtitle = paste0("From: ", min(df_scmd_ddd_map$year_month), " to ", max(df_scmd_ddd_map$year_month)),
        x = NULL,
-       y = "Defined Daily Dose",
+       y = "Defined Daily Dose (NOTE THAT UNITS ARE NOT ACCURATE)",
        fill = NULL) +
   scale_y_continuous(labels = scales::comma) +
   theme(text = element_text(size = 12),
@@ -567,9 +588,9 @@ plotly::ggplotly(temp_ggplot,
   layout(legend = list(orientation = "h", x = -0.5, y =-.15))
 ```
 
-- The following table shows the % use for all STPs
+<!-- - The following table shows the % use for all STPs -->
 
-```{r}
+```{r, eval=FALSE}
 # Create table, code here: "scripts/create_tables.R"
 # the data is defined above and needs to contain the following columns:
 # - stp_name <fct>
