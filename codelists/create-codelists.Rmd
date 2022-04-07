@@ -1,5 +1,7 @@
 ---
-title: "Create Codelists"
+title: "Create Codelist"
+subtitle: "Rheumatorlogy"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     code_folding: hide
@@ -9,7 +11,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
 # Load pkgs and funs
@@ -36,21 +38,11 @@ source(here("scripts/create_ingredient_lookup_sql.R"))
 
 ```{r, class.source = 'fold-show'}
 # Define product list for lookup
-ingredient_list <- c('Adalimumab', 
-                     'Etanercept', 
-                     'Certolizumab', 
-                     'Infliximab', 
-                     'Golimumab',
-                     'Rituximab',
-                     'Tocilizumab',
-                     'Sarilumab',
-                     'Tofacitinib',
-                     'Baricitinib',
-                     'Upadacitinib',
-                     'Filgotinib',
-                     'Abatacept',
-                     'Ipilimumab',
-                     'Nivolumab',
+ingredient_list <- c('Adalimumab', 'Etanercept', 'Certolizumab', 
+                     'Infliximab', 'Golimumab','Rituximab',
+                     'Tocilizumab','Sarilumab','Tofacitinib',
+                     'Baricitinib','Upadacitinib','Filgotinib',
+                     'Abatacept','Ipilimumab','Nivolumab',
                      'Pembrolizumab')
 ```
 
@@ -62,7 +54,6 @@ sql_wild_ingredients <- create_ingredient_lookup_sql(ingredient_list,
                                                      wildcards = TRUE,
                                                      return = "sql")
 
-write_lines(sql_wild_ingredients, here("sql/rheumatology_meds_lookup.sql"))
 ```
 
 The code of the function `create_ingredients_lookup_sql()` is available in the chunk below:
@@ -73,7 +64,7 @@ The code of the function `create_ingredients_lookup_sql()` is available in the c
 
 # Show SQL query
 
-- The SQL query is also saved in a separate file at `sql/rheumatology_meds_lookup.sql`
+## Wildcards
 
 ```{r, class.source = 'fold-show'}
 cat(sql_wild_ingredients)
@@ -84,11 +75,9 @@ cat(sql_wild_ingredients)
 - Using SQL codes with wildcards 
 
 ```{r, cache=TRUE}
-
 df_ingredients <- dplyr::tbl(conn_ebm_dmd, sql_wild_ingredients) %>% 
   collect() %>% 
   arrange(id)
-
 ```
 
 ## ddd availability
@@ -116,7 +105,7 @@ df_ingredients %>%
             groupBy = "ingredient",
             columns = list(
               type = reactable::colDef(minWidth = 30),
-              id = reactable::colDef(minWidth = 100),
+              id = reactable::colDef(minWidth = 60),
               bnf_code = reactable::colDef(minWidth = 100),
               nm = reactable::colDef(minWidth = 200),
               ingredient = reactable::colDef(minWidth = 100),
@@ -127,7 +116,9 @@ df_ingredients %>%
 )
 ```
 
-<!-- # Write .csv -->
+# Write .csv
+
+- The .csv file is available [here](https://github.com/ebmdatalab/scmd-rheumatology/blob/main/data/rheumatology_meds.csv)
 
 ```{r}
 # Uncomment this line and add correct file name 
