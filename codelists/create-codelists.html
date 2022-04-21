@@ -11,7 +11,7 @@
 
 
 
-<title>Create Codelists</title>
+<title>Create Codelist</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -3334,7 +3334,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Create Codelists</h1>
+<h1 class="title toc-ignore">Create Codelist</h1>
+<h3 class="subtitle">Rheumatorlogy</h3>
+<h4 class="date">07 April, 2022</h4>
 
 </div>
 
@@ -3359,21 +3361,11 @@ source(here(&quot;scripts/create_ingredient_lookup_sql.R&quot;))</code></pre>
 <div id="define-ingredients" class="section level1">
 <h1>Define ingredients</h1>
 <pre class="r fold-show"><code># Define product list for lookup
-ingredient_list &lt;- c(&#39;Adalimumab&#39;, 
-                     &#39;Etanercept&#39;, 
-                     &#39;Certolizumab&#39;, 
-                     &#39;Infliximab&#39;, 
-                     &#39;Golimumab&#39;,
-                     &#39;Rituximab&#39;,
-                     &#39;Tocilizumab&#39;,
-                     &#39;Sarilumab&#39;,
-                     &#39;Tofacitinib&#39;,
-                     &#39;Baricitinib&#39;,
-                     &#39;Upadacitinib&#39;,
-                     &#39;Filgotinib&#39;,
-                     &#39;Abatacept&#39;,
-                     &#39;Ipilimumab&#39;,
-                     &#39;Nivolumab&#39;,
+ingredient_list &lt;- c(&#39;Adalimumab&#39;, &#39;Etanercept&#39;, &#39;Certolizumab&#39;, 
+                     &#39;Infliximab&#39;, &#39;Golimumab&#39;,&#39;Rituximab&#39;,
+                     &#39;Tocilizumab&#39;,&#39;Sarilumab&#39;,&#39;Tofacitinib&#39;,
+                     &#39;Baricitinib&#39;,&#39;Upadacitinib&#39;,&#39;Filgotinib&#39;,
+                     &#39;Abatacept&#39;,&#39;Ipilimumab&#39;,&#39;Nivolumab&#39;,
                      &#39;Pembrolizumab&#39;)</code></pre>
 </div>
 <div id="create-sql-queries" class="section level1">
@@ -3381,9 +3373,7 @@ ingredient_list &lt;- c(&#39;Adalimumab&#39;,
 <pre class="r fold-show"><code># With wildcards
 sql_wild_ingredients &lt;- create_ingredient_lookup_sql(ingredient_list, 
                                                      wildcards = TRUE,
-                                                     return = &quot;sql&quot;)
-
-write_lines(sql_wild_ingredients, here(&quot;sql/rheumatology_meds_lookup.sql&quot;))</code></pre>
+                                                     return = &quot;sql&quot;)</code></pre>
 <p>The code of the function <code>create_ingredients_lookup_sql()</code> is available in the chunk below:</p>
 <pre class="r"><code>#&#39; Create SQL code for looking up ingredients
 #&#39;
@@ -3428,13 +3418,13 @@ LEFT JOIN dmd.ddd on vmp.id = ddd.vpid
       
       if (ingredient == 1) {
         
-        sql_query_where_wild &lt;- paste0(&quot;WHERE &quot;, &quot;ing.nm &quot;, &quot;LIKE &quot;, 
-                                       &quot;&#39;&quot;, wild_ingredient_list[1], &quot;&#39;\n&quot;)
+        sql_query_where_wild &lt;- paste0(&quot;WHERE &quot;, &quot;LOWER(ing.nm) &quot;, &quot;LIKE &quot;, 
+                                       &quot;LOWER(&#39;&quot;, wild_ingredient_list[1], &quot;&#39;)\n&quot;)
         
       } else {
         
-        sql_query_or_wild[ingredient - 1] &lt;- paste0(&quot;   &quot;, &quot;OR &quot;, &quot;ing.nm &quot;, &quot;LIKE &quot;, 
-                                                         &quot;&#39;&quot;, wild_ingredient_list[ingredient], &quot;&#39;\n&quot;)
+        sql_query_or_wild[ingredient - 1] &lt;- paste0(&quot;   &quot;, &quot;OR &quot;, &quot;LOWER(ing.nm) &quot;, &quot;LIKE &quot;, 
+                                                         &quot;LOWER(&#39;&quot;, wild_ingredient_list[ingredient], &quot;&#39;)\n&quot;)
         
       }
     }
@@ -3471,31 +3461,31 @@ LEFT JOIN dmd.ddd on vmp.id = ddd.vpid
 </div>
 <div id="show-sql-query" class="section level1">
 <h1>Show SQL query</h1>
-<ul>
-<li>The SQL query is also saved in a separate file at <code>sql/rheumatology_meds_lookup.sql</code></li>
-</ul>
+<div id="wildcards" class="section level2">
+<h2>Wildcards</h2>
 <pre class="r fold-show"><code>cat(sql_wild_ingredients)</code></pre>
 <pre><code>## SELECT &#39;vmp&#39; AS type, CAST(vmp.id AS STRING) AS id, bnf_code, vmp.nm, ing.nm AS ingredient, ddd.ddd 
 ## FROM dmd.vmp
 ## INNER JOIN dmd.vpi AS vpi ON vmp.id = vpi.vmp 
 ## INNER JOIN dmd.ing as ing ON ing.id = vpi.ing 
 ## LEFT JOIN dmd.ddd on vmp.id = ddd.vpid
-## WHERE ing.nm LIKE &#39;%Adalimumab%&#39;
-##    OR ing.nm LIKE &#39;%Etanercept%&#39;
-##    OR ing.nm LIKE &#39;%Certolizumab%&#39;
-##    OR ing.nm LIKE &#39;%Infliximab%&#39;
-##    OR ing.nm LIKE &#39;%Golimumab%&#39;
-##    OR ing.nm LIKE &#39;%Rituximab%&#39;
-##    OR ing.nm LIKE &#39;%Tocilizumab%&#39;
-##    OR ing.nm LIKE &#39;%Sarilumab%&#39;
-##    OR ing.nm LIKE &#39;%Tofacitinib%&#39;
-##    OR ing.nm LIKE &#39;%Baricitinib%&#39;
-##    OR ing.nm LIKE &#39;%Upadacitinib%&#39;
-##    OR ing.nm LIKE &#39;%Filgotinib%&#39;
-##    OR ing.nm LIKE &#39;%Abatacept%&#39;
-##    OR ing.nm LIKE &#39;%Ipilimumab%&#39;
-##    OR ing.nm LIKE &#39;%Nivolumab%&#39;
-##    OR ing.nm LIKE &#39;%Pembrolizumab%&#39;</code></pre>
+## WHERE LOWER(ing.nm) LIKE LOWER(&#39;%Adalimumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Etanercept%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Certolizumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Infliximab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Golimumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Rituximab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Tocilizumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Sarilumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Tofacitinib%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Baricitinib%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Upadacitinib%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Filgotinib%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Abatacept%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Ipilimumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Nivolumab%&#39;)
+##    OR LOWER(ing.nm) LIKE LOWER(&#39;%Pembrolizumab%&#39;)</code></pre>
+</div>
 </div>
 <div id="show-results" class="section level1">
 <h1>Show results</h1>
@@ -3514,8 +3504,8 @@ LEFT JOIN dmd.ddd on vmp.id = ddd.vpid
   reactable(filterable = TRUE,
             style = list(fontSize = &quot;12px&quot;),
             highlight = TRUE)</code></pre>
-<div id="htmlwidget-f5724b067faa68df9582" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-f5724b067faa68df9582">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"ingredient":["Abatacept","Adalimumab","Baricitinib","Certolizumab pegol","Etanercept","Filgotinib maleate","Golimumab","Infliximab","Ipilimumab","Nivolumab","Pembrolizumab","Rituximab","Sarilumab","Tocilizumab","Tofacitinib citrate","Upadacitinib hemihydrate"],"ddd_available":[true,true,true,true,true,false,true,true,false,false,false,false,true,true,true,false],"n":[5,9,2,3,7,2,3,3,2,3,2,9,4,5,3,3]},"columns":[{"accessor":"ingredient","name":"ingredient","type":"character"},{"accessor":"ddd_available","name":"ddd_available","type":"logical"},{"accessor":"n","name":"n","type":"numeric"}],"filterable":true,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"highlight":true,"style":{"fontSize":"12px"},"dataKey":"50bc9225c111bfaf0b6fc9692f13436c","key":"50bc9225c111bfaf0b6fc9692f13436c"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-0e8a56ccd7755ef12a23" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0e8a56ccd7755ef12a23">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"ingredient":["Abatacept","Adalimumab","Baricitinib","Certolizumab pegol","Etanercept","Filgotinib maleate","Golimumab","Infliximab","Ipilimumab","Nivolumab","Pembrolizumab","Rituximab","Sarilumab","Tocilizumab","Tofacitinib citrate","Tofacitinib citrate","Upadacitinib hemihydrate"],"ddd_available":[true,true,true,true,true,false,true,true,false,false,false,false,true,true,false,true,false],"n":[5,9,2,3,7,2,3,3,2,4,2,9,4,5,1,3,3]},"columns":[{"accessor":"ingredient","name":"ingredient","type":"character"},{"accessor":"ddd_available","name":"ddd_available","type":"logical"},{"accessor":"n","name":"n","type":"numeric"}],"filterable":true,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"highlight":true,"style":{"fontSize":"12px"},"dataKey":"f7e2d3cdafff2bc936de87d06890b1ae","key":"f7e2d3cdafff2bc936de87d06890b1ae"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="detailed-information" class="section level2">
 <h2>Detailed information</h2>
@@ -3524,7 +3514,7 @@ LEFT JOIN dmd.ddd on vmp.id = ddd.vpid
             groupBy = &quot;ingredient&quot;,
             columns = list(
               type = reactable::colDef(minWidth = 30),
-              id = reactable::colDef(minWidth = 100),
+              id = reactable::colDef(minWidth = 60),
               bnf_code = reactable::colDef(minWidth = 100),
               nm = reactable::colDef(minWidth = 200),
               ingredient = reactable::colDef(minWidth = 100),
@@ -3533,12 +3523,15 @@ LEFT JOIN dmd.ddd on vmp.id = ddd.vpid
             style = list(fontSize = &quot;12px&quot;),
             highlight = TRUE
 )</code></pre>
-<div id="htmlwidget-73e97418f77d846f97aa" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-73e97418f77d846f97aa">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"type":["vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp"],"id":["10970211000001102","11034511000001106","11236911000001103","11762011000001101","15987111000001107","16101911000001101","16102011000001108","16102111000001109","17315811000001100","18038011000001101","18038111000001100","19448511000001100","19448611000001101","19697711000001100","19946811000001101","21704711000001107","23984711000001106","24856511000001109","24856911000001102","29767011000001106","29889111000001100","29889211000001106","30033011000001108","32888111000001102","32888211000001108","33523711000001105","34346011000001104","34378411000001105","34625211000001109","34742511000001107","34742611000001106","34742711000001102","34742811000001105","34840511000001108","35318811000001108","35431611000001103","35541811000001105","35734311000001100","35894411000001100","35934711000001107","35934811000001104","36065611000001101","36065711000001105","36441711000001106","36457911000001103","36458011000001101","37223011000001109","37223111000001105","37829011000001101","37829111000001100","37829211000001106","37829311000001103","37829511000001109","37829611000001108","37854811000001107","38030511000001109","38067611000001103","38162311000001103","38196011000001104","38196111000001103","39046211000001107","39046311000001104","39705411000001108","400687000","40087811000001102"],"bnf_code":["1001030D0AAACAC","1001030D0AAADAD","1001030S0AAABAB","1001030V0AAAAAA","1001030D0AAAEAE","1001030W0AAABAB","1001030W0AAACAC","1001030W0AAAAAA","1001030Y0AAAAAA","1001030X0AAABAB","1001030X0AAAAAA","0801050BCAAABAB","0801050BCAAAAAA","1001030S0AAACAC","1001030D0AAAFAF","1001030V0AAABAB","1001030X0AAACAC","0802030F0AAACAC","1001030W0AAADAD","1001030V0AAACAC","0802040ATAAABAB","0802040ATAAAAAA","0801050CAAAAAAA","1001030S0AAADAD","1001030S0AAAEAE","1001030Y0AAABAB","1001030ACAAAAAA","0801050CAAAABAB","1001030ACAAABAB","1001030ADAAACAC","1001030ADAAAAAA","1001030ADAAADAD","1001030ADAAABAB","1001030D0AAAGAG","1001030S0AAAFAF","1001030W0AAAEAE","0802040ATAAACAC","1001030ABAAACAC","1001030S0AAAAAA","0802030F0AAABAB","0802030F0AAAAAA","1001030D0AAAAAA","1001030D0AAABAB","1001030S0AAAIAI","1001030S0AAAHAH","1001030S0AAAGAG","1001030V0AAAEAE","1001030V0AAADAD",null,null,null,null,null,null,"1001030Y0AAACAC",null,"1001030AEAAAAAA","1001030ABAAADAD","1001030T0AAABAB","1001030T0AAACAC","1001030AGAAAAAA","1001030AGAAABAB","1001030ABAAABAB","1001030T0AAAAAA","1001030AEAAABAB"],"nm":["Etanercept 50mg/1ml solution for injection pre-filled syringes","Etanercept 25mg/0.5ml solution for injection pre-filled syringes","Adalimumab 40mg/0.8ml solution for injection pre-filled disposable devices","Abatacept 250mg powder for solution for infusion vials","Etanercept 50mg/1ml solution for injection pre-filled disposable devices","Tocilizumab 200mg/10ml solution for infusion vials","Tocilizumab 400mg/20ml solution for infusion vials","Tocilizumab 80mg/4ml solution for infusion vials","Certolizumab pegol 200mg/1ml solution for injection pre-filled syringes","Golimumab 50mg/0.5ml solution for injection pre-filled disposable devices","Golimumab 50mg/0.5ml solution for injection pre-filled syringes","Ipilimumab 200mg/40ml solution for infusion vials","Ipilimumab 50mg/10ml solution for infusion vials","Adalimumab 40mg/0.8ml solution for injection vials","Etanercept 10mg powder and solvent for solution for injection vials","Abatacept 125mg/1ml solution for injection pre-filled syringes","Golimumab 100mg/1ml solution for injection pre-filled disposable devices","Rituximab 1.4g/11.7ml solution for injection vials","Tocilizumab 162mg/0.9ml solution for injection pre-filled syringes","Abatacept 125mg/1ml solution for injection pre-filled disposable devices","Nivolumab 100mg/10ml solution for infusion vials","Nivolumab 40mg/4ml solution for infusion vials","Pembrolizumab 50mg powder for solution for infusion vials","Adalimumab 40mg/0.4ml solution for injection pre-filled disposable devices","Adalimumab 40mg/0.4ml solution for injection pre-filled syringes","Certolizumab pegol 200mg/1ml solution for injection pre-filled disposable devices","Baricitinib 4mg tablets","Pembrolizumab 100mg/4ml solution for infusion vials","Baricitinib 2mg tablets","Sarilumab 150mg/1.14ml solution for injection pre-filled disposable devices","Sarilumab 150mg/1.14ml solution for injection pre-filled syringes","Sarilumab 200mg/1.14ml solution for injection pre-filled disposable devices","Sarilumab 200mg/1.14ml solution for injection pre-filled syringes","Etanercept 25mg/0.5ml solution for injection pre-filled disposable devices","Adalimumab 20mg/0.2ml solution for injection pre-filled syringes","Tocilizumab 162mg/0.9ml solution for injection pre-filled disposable devices","Nivolumab 240mg/24ml solution for infusion vials","Tofacitinib 10mg tablets","Adalimumab 40mg/0.8ml solution for injection pre-filled syringes","Rituximab 100mg/10ml solution for infusion vials","Rituximab 500mg/50ml solution for infusion vials","Etanercept 25mg powder and solvent for solution for injection vials","Etanercept 50mg powder and solvent for solution for injection vials","Adalimumab 20mg/0.4ml solution for injection pre-filled syringes","Adalimumab 80mg/0.8ml solution for injection pre-filled disposable devices","Adalimumab 80mg/0.8ml solution for injection pre-filled syringes","Abatacept 50mg/0.4ml solution for injection pre-filled syringes","Abatacept 87.5mg/0.7ml solution for injection pre-filled syringes","Rituximab 1000mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 500mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 600mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 700mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 800mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 900mg/500ml in Sodium chloride 0.9% infusion bags","Certolizumab pegol 200mg/1ml solution for injection cartridges","Upadacitinib hemihydrate 15mg tablets","Upadacitinib 15mg modified-release tablets","Tofacitinib 11mg modified-release tablets","Infliximab 120mg/1ml solution for injection pre-filled disposable devices","Infliximab 120mg/1ml solution for injection pre-filled syringes","Filgotinib 100mg tablets","Filgotinib 200mg tablets","Tofacitinib 5mg tablets","Infliximab 100mg powder for solution for infusion vials","Upadacitinib 30mg modified-release tablets"],"ingredient":["Etanercept","Etanercept","Adalimumab","Abatacept","Etanercept","Tocilizumab","Tocilizumab","Tocilizumab","Certolizumab pegol","Golimumab","Golimumab","Ipilimumab","Ipilimumab","Adalimumab","Etanercept","Abatacept","Golimumab","Rituximab","Tocilizumab","Abatacept","Nivolumab","Nivolumab","Pembrolizumab","Adalimumab","Adalimumab","Certolizumab pegol","Baricitinib","Pembrolizumab","Baricitinib","Sarilumab","Sarilumab","Sarilumab","Sarilumab","Etanercept","Adalimumab","Tocilizumab","Nivolumab","Tofacitinib citrate","Adalimumab","Rituximab","Rituximab","Etanercept","Etanercept","Adalimumab","Adalimumab","Adalimumab","Abatacept","Abatacept","Rituximab","Rituximab","Rituximab","Rituximab","Rituximab","Rituximab","Certolizumab pegol","Upadacitinib hemihydrate","Upadacitinib hemihydrate","Tofacitinib citrate","Infliximab","Infliximab","Filgotinib maleate","Filgotinib maleate","Tofacitinib citrate","Infliximab","Upadacitinib hemihydrate"],"ddd":[7,7,2.9,27,7,20,20,20,14,1.66,1.66,"NA","NA",2.9,7,27,1.66,"NA",20,27,"NA","NA","NA",2.9,2.9,14,4,"NA",4,14.3,14.3,14.3,14.3,7,2.9,20,"NA",10,2.9,"NA","NA",7,7,2.9,2.9,2.9,27,27,"NA","NA","NA","NA","NA","NA",14,"NA","NA",10,3.75,3.75,"NA","NA",10,3.75,"NA"]},"columns":[{"accessor":"type","name":"type","type":"character","minWidth":30},{"accessor":"id","name":"id","type":"character","minWidth":100},{"accessor":"bnf_code","name":"bnf_code","type":"character","minWidth":100},{"accessor":"nm","name":"nm","type":"character","minWidth":200},{"accessor":"ingredient","name":"ingredient","type":"character","minWidth":100},{"accessor":"ddd","name":"ddd","type":"numeric","minWidth":30}],"pivotBy":["ingredient"],"filterable":true,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"highlight":true,"style":{"fontSize":"12px"},"dataKey":"a915f1e71564797b5ca6eddd5b802e7d","key":"a915f1e71564797b5ca6eddd5b802e7d"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-33d24c3bbe9f34e1a28f" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-33d24c3bbe9f34e1a28f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"type":["vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp","vmp"],"id":["10970211000001102","11034511000001106","11236911000001103","11762011000001101","15987111000001107","16101911000001101","16102011000001108","16102111000001109","17315811000001100","18038011000001101","18038111000001100","19448511000001100","19448611000001101","19697711000001100","19946811000001101","21704711000001107","23984711000001106","24856511000001109","24856911000001102","29767011000001106","29889111000001100","29889211000001106","30033011000001108","32888111000001102","32888211000001108","33523711000001105","34346011000001104","34378411000001105","34625211000001109","34742511000001107","34742611000001106","34742711000001102","34742811000001105","34840511000001108","35318811000001108","35431611000001103","35541811000001105","35734311000001100","35894411000001100","35934711000001107","35934811000001104","36065611000001101","36065711000001105","36441711000001106","36457911000001103","36458011000001101","37223011000001109","37223111000001105","37829011000001101","37829111000001100","37829211000001106","37829311000001103","37829511000001109","37829611000001108","37854811000001107","38030511000001109","38067611000001103","38162311000001103","38196011000001104","38196111000001103","39046211000001107","39046311000001104","39705411000001108","400687000","40087811000001102","40418611000001106","40573711000001109"],"bnf_code":["1001030D0AAACAC","1001030D0AAADAD","1001030S0AAABAB","1001030V0AAAAAA","1001030D0AAAEAE","1001030W0AAABAB","1001030W0AAACAC","1001030W0AAAAAA","1001030Y0AAAAAA","1001030X0AAABAB","1001030X0AAAAAA","0801050BCAAABAB","0801050BCAAAAAA","1001030S0AAACAC","1001030D0AAAFAF","1001030V0AAABAB","1001030X0AAACAC","0802030F0AAACAC","1001030W0AAADAD","1001030V0AAACAC","0802040ATAAABAB","0802040ATAAAAAA","0801050CAAAAAAA","1001030S0AAADAD","1001030S0AAAEAE","1001030Y0AAABAB","1001030ACAAAAAA","0801050CAAAABAB","1001030ACAAABAB","1001030ADAAACAC","1001030ADAAAAAA","1001030ADAAADAD","1001030ADAAABAB","1001030D0AAAGAG","1001030S0AAAFAF","1001030W0AAAEAE","0802040ATAAACAC","1001030ABAAACAC","1001030S0AAAAAA","0802030F0AAABAB","0802030F0AAAAAA","1001030D0AAAAAA","1001030D0AAABAB","1001030S0AAAIAI","1001030S0AAAHAH","1001030S0AAAGAG","1001030V0AAAEAE","1001030V0AAADAD",null,null,null,null,null,null,"1001030Y0AAACAC",null,"1001030AEAAAAAA","1001030ABAAADAD","1001030T0AAABAB","1001030T0AAACAC","1001030AGAAAAAA","1001030AGAAABAB","1001030ABAAABAB","1001030T0AAAAAA","1001030AEAAABAB",null,null],"nm":["Etanercept 50mg/1ml solution for injection pre-filled syringes","Etanercept 25mg/0.5ml solution for injection pre-filled syringes","Adalimumab 40mg/0.8ml solution for injection pre-filled disposable devices","Abatacept 250mg powder for solution for infusion vials","Etanercept 50mg/1ml solution for injection pre-filled disposable devices","Tocilizumab 200mg/10ml solution for infusion vials","Tocilizumab 400mg/20ml solution for infusion vials","Tocilizumab 80mg/4ml solution for infusion vials","Certolizumab pegol 200mg/1ml solution for injection pre-filled syringes","Golimumab 50mg/0.5ml solution for injection pre-filled disposable devices","Golimumab 50mg/0.5ml solution for injection pre-filled syringes","Ipilimumab 200mg/40ml solution for infusion vials","Ipilimumab 50mg/10ml solution for infusion vials","Adalimumab 40mg/0.8ml solution for injection vials","Etanercept 10mg powder and solvent for solution for injection vials","Abatacept 125mg/1ml solution for injection pre-filled syringes","Golimumab 100mg/1ml solution for injection pre-filled disposable devices","Rituximab 1.4g/11.7ml solution for injection vials","Tocilizumab 162mg/0.9ml solution for injection pre-filled syringes","Abatacept 125mg/1ml solution for injection pre-filled disposable devices","Nivolumab 100mg/10ml solution for infusion vials","Nivolumab 40mg/4ml solution for infusion vials","Pembrolizumab 50mg powder for solution for infusion vials","Adalimumab 40mg/0.4ml solution for injection pre-filled disposable devices","Adalimumab 40mg/0.4ml solution for injection pre-filled syringes","Certolizumab pegol 200mg/1ml solution for injection pre-filled disposable devices","Baricitinib 4mg tablets","Pembrolizumab 100mg/4ml solution for infusion vials","Baricitinib 2mg tablets","Sarilumab 150mg/1.14ml solution for injection pre-filled disposable devices","Sarilumab 150mg/1.14ml solution for injection pre-filled syringes","Sarilumab 200mg/1.14ml solution for injection pre-filled disposable devices","Sarilumab 200mg/1.14ml solution for injection pre-filled syringes","Etanercept 25mg/0.5ml solution for injection pre-filled disposable devices","Adalimumab 20mg/0.2ml solution for injection pre-filled syringes","Tocilizumab 162mg/0.9ml solution for injection pre-filled disposable devices","Nivolumab 240mg/24ml solution for infusion vials","Tofacitinib 10mg tablets","Adalimumab 40mg/0.8ml solution for injection pre-filled syringes","Rituximab 100mg/10ml solution for infusion vials","Rituximab 500mg/50ml solution for infusion vials","Etanercept 25mg powder and solvent for solution for injection vials","Etanercept 50mg powder and solvent for solution for injection vials","Adalimumab 20mg/0.4ml solution for injection pre-filled syringes","Adalimumab 80mg/0.8ml solution for injection pre-filled disposable devices","Adalimumab 80mg/0.8ml solution for injection pre-filled syringes","Abatacept 50mg/0.4ml solution for injection pre-filled syringes","Abatacept 87.5mg/0.7ml solution for injection pre-filled syringes","Rituximab 1000mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 500mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 600mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 700mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 800mg/500ml in Sodium chloride 0.9% infusion bags","Rituximab 900mg/500ml in Sodium chloride 0.9% infusion bags","Certolizumab pegol 200mg/1ml solution for injection cartridges","Upadacitinib hemihydrate 15mg tablets","Upadacitinib 15mg modified-release tablets","Tofacitinib 11mg modified-release tablets","Infliximab 120mg/1ml solution for injection pre-filled disposable devices","Infliximab 120mg/1ml solution for injection pre-filled syringes","Filgotinib 100mg tablets","Filgotinib 200mg tablets","Tofacitinib 5mg tablets","Infliximab 100mg powder for solution for infusion vials","Upadacitinib 30mg modified-release tablets","Tofacitinib 1mg/ml oral solution sugar free","Nivolumab 120mg/12ml solution for infusion vials"],"ingredient":["Etanercept","Etanercept","Adalimumab","Abatacept","Etanercept","Tocilizumab","Tocilizumab","Tocilizumab","Certolizumab pegol","Golimumab","Golimumab","Ipilimumab","Ipilimumab","Adalimumab","Etanercept","Abatacept","Golimumab","Rituximab","Tocilizumab","Abatacept","Nivolumab","Nivolumab","Pembrolizumab","Adalimumab","Adalimumab","Certolizumab pegol","Baricitinib","Pembrolizumab","Baricitinib","Sarilumab","Sarilumab","Sarilumab","Sarilumab","Etanercept","Adalimumab","Tocilizumab","Nivolumab","Tofacitinib citrate","Adalimumab","Rituximab","Rituximab","Etanercept","Etanercept","Adalimumab","Adalimumab","Adalimumab","Abatacept","Abatacept","Rituximab","Rituximab","Rituximab","Rituximab","Rituximab","Rituximab","Certolizumab pegol","Upadacitinib hemihydrate","Upadacitinib hemihydrate","Tofacitinib citrate","Infliximab","Infliximab","Filgotinib maleate","Filgotinib maleate","Tofacitinib citrate","Infliximab","Upadacitinib hemihydrate","Tofacitinib citrate","Nivolumab"],"ddd":[7,7,2.9,27,7,20,20,20,14,1.66,1.66,"NA","NA",2.9,7,27,1.66,"NA",20,27,"NA","NA","NA",2.9,2.9,14,4,"NA",4,14.3,14.3,14.3,14.3,7,2.9,20,"NA",10,2.9,"NA","NA",7,7,2.9,2.9,2.9,27,27,"NA","NA","NA","NA","NA","NA",14,"NA","NA",10,3.75,3.75,"NA","NA",10,3.75,"NA","NA","NA"]},"columns":[{"accessor":"type","name":"type","type":"character","minWidth":30},{"accessor":"id","name":"id","type":"character","minWidth":60},{"accessor":"bnf_code","name":"bnf_code","type":"character","minWidth":100},{"accessor":"nm","name":"nm","type":"character","minWidth":200},{"accessor":"ingredient","name":"ingredient","type":"character","minWidth":100},{"accessor":"ddd","name":"ddd","type":"numeric","minWidth":30}],"pivotBy":["ingredient"],"filterable":true,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"highlight":true,"style":{"fontSize":"12px"},"dataKey":"b84a32f32e4c51e0133b248e9fcc80ad","key":"b84a32f32e4c51e0133b248e9fcc80ad"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="write-.csv" class="section level1">
 <h1>Write .csv</h1>
+<ul>
+<li>The .csv file is available <a href="https://github.com/ebmdatalab/scmd-rheumatology/blob/main/data/rheumatology_meds.csv">here</a></li>
+</ul>
 <pre class="r"><code># Uncomment this line and add correct file name 
 write_csv(df_ingredients, file = here(&quot;data/rheumatology_meds.csv&quot;))</code></pre>
 </div>
